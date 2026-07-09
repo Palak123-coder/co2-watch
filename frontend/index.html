@@ -4,19 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Carbon Intelligence Suite — CO2 Watch</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
   :root{
     --bg: #0F1512;
     --panel: #161F1B;
     --panel-2: #1C2723;
+    --panel-3: #111A16;
     --line: #2A3733;
     --text: #E9EFEC;
     --text-dim: #8FA39B;
     --accent: #4FD1AE;
+    --accent-soft: rgba(79,209,174,0.12);
     --alert: #FF9143;
     --alert-dim: #7A5233;
+    --danger: #FF6B6B;
   }
 
   *{
@@ -132,13 +137,13 @@
     display:grid;
     grid-template-columns:300px 1fr;
     gap:0;
-    max-width:1180px;
+    max-width:1280px;
     width:100%;
     margin:0 auto;
     min-height:0;
   }
 
-  @media (max-width:820px){
+  @media (max-width:920px){
     main{
       grid-template-columns:1fr;
     }
@@ -253,6 +258,7 @@
     font-size:12.5px;
     cursor:pointer;
     transition:border-color .15s ease, transform .1s ease;
+    font-family:'Space Grotesk', sans-serif;
   }
 
   .chip:hover{
@@ -260,7 +266,7 @@
     transform:translateY(-1px);
   }
 
-  /* ---- Chat ---- */
+  /* ---- Chat + Equipment Main Panel ---- */
   .chat-panel{
     display:flex;
     flex-direction:column;
@@ -268,13 +274,244 @@
     height:calc(100vh - 150px);
   }
 
+  .equipment-board{
+    border-bottom:1px solid var(--line);
+    background:
+      radial-gradient(ellipse at top right, rgba(79,209,174,0.08), transparent 42%),
+      var(--panel-3);
+    padding:20px 26px;
+    max-height:48vh;
+    overflow:auto;
+  }
+
+  .equipment-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:18px;
+    margin-bottom:16px;
+  }
+
+  .equipment-title-block{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+  }
+
+  .equipment-title-block h2{
+    font-size:20px;
+    letter-spacing:-0.01em;
+  }
+
+  .equipment-title-block p{
+    color:var(--text-dim);
+    font-size:13.5px;
+    line-height:1.45;
+    max-width:760px;
+  }
+
+  .equipment-actions{
+    display:flex;
+    gap:9px;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+  }
+
+  .upload-btn,
+  .report-btn,
+  .refresh-btn{
+    border:none;
+    border-radius:9px;
+    padding:10px 13px;
+    font-family:'Space Grotesk', sans-serif;
+    font-size:12.5px;
+    font-weight:700;
+    cursor:pointer;
+    transition:transform .1s ease, filter .15s ease, border-color .15s ease;
+    white-space:nowrap;
+  }
+
+  .upload-btn{
+    background:var(--accent);
+    color:#0B1613;
+  }
+
+  .report-btn{
+    background:rgba(255,145,67,0.14);
+    border:1px solid var(--alert-dim);
+    color:var(--alert);
+  }
+
+  .refresh-btn{
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    color:var(--text);
+  }
+
+  .upload-btn:hover,
+  .report-btn:hover,
+  .refresh-btn:hover{
+    transform:translateY(-1px);
+    filter:brightness(1.06);
+  }
+
+  .upload-status{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    color:var(--text-dim);
+    margin-bottom:14px;
+    min-height:18px;
+  }
+
+  .equipment-grid{
+    display:grid;
+    grid-template-columns:repeat(4, minmax(150px, 1fr));
+    gap:12px;
+    margin-bottom:16px;
+  }
+
+  .equipment-card,
+  .loading-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px;
+    min-height:132px;
+  }
+
+  .equipment-card h3{
+    font-size:15px;
+    margin-bottom:9px;
+  }
+
+  .equipment-card .value{
+    font-family:'JetBrains Mono', monospace;
+    font-size:16px;
+    color:var(--accent);
+    font-weight:700;
+    margin-bottom:6px;
+  }
+
+  .equipment-card .sub-value{
+    color:var(--text-dim);
+    font-size:12.5px;
+    margin-bottom:5px;
+    line-height:1.35;
+  }
+
+  .equipment-card .share{
+    display:inline-block;
+    margin-top:5px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    background:rgba(79,209,174,0.10);
+    border:1px solid rgba(79,209,174,0.28);
+    color:var(--accent);
+    padding:3px 7px;
+    border-radius:999px;
+  }
+
+  .equipment-card.root-highlight{
+    border-color:var(--alert);
+    background:linear-gradient(135deg, rgba(255,145,67,0.10), rgba(79,209,174,0.05));
+  }
+
+  .equipment-subgrid{
+    display:grid;
+    grid-template-columns:1.25fr 0.85fr;
+    gap:14px;
+  }
+
+  .panel-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px;
+  }
+
+  .panel-card h3{
+    font-size:15px;
+    margin-bottom:8px;
+  }
+
+  .table-wrapper{
+    overflow-x:auto;
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+  }
+
+  th,
+  td{
+    padding:9px 8px;
+    border-bottom:1px solid var(--line);
+    text-align:left;
+    font-size:12.5px;
+    vertical-align:top;
+  }
+
+  th{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--accent);
+    background:rgba(79,209,174,0.05);
+  }
+
+  td{
+    color:var(--text-dim);
+  }
+
+  .root-cause-box{
+    background:rgba(255,145,67,0.08);
+    border:1px solid var(--alert-dim);
+    border-left:4px solid var(--alert);
+    border-radius:10px;
+    padding:12px;
+    color:var(--text);
+    font-size:13px;
+    line-height:1.45;
+  }
+
+  .root-cause-box strong{
+    color:var(--alert);
+  }
+
+  .quick-prompts{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:12px;
+  }
+
+  .quick-prompts button{
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    color:var(--text);
+    padding:7px 9px;
+    border-radius:999px;
+    cursor:pointer;
+    font-size:11.5px;
+    font-family:'Space Grotesk', sans-serif;
+    transition:border-color .15s ease, transform .1s ease;
+  }
+
+  .quick-prompts button:hover{
+    border-color:var(--accent);
+    transform:translateY(-1px);
+  }
+
   .messages{
     flex:1;
     overflow-y:auto;
-    padding:26px 32px;
+    padding:22px 32px;
     display:flex;
     flex-direction:column;
     gap:16px;
+    min-height:230px;
   }
 
   .msg{
@@ -407,11 +644,61 @@
 
   ::-webkit-scrollbar{
     width:8px;
+    height:8px;
   }
 
   ::-webkit-scrollbar-thumb{
     background:var(--line);
     border-radius:8px;
+  }
+
+  @media (max-width:1100px){
+    .equipment-grid{
+      grid-template-columns:repeat(2, minmax(160px, 1fr));
+    }
+
+    .equipment-subgrid{
+      grid-template-columns:1fr;
+    }
+
+    .equipment-header{
+      flex-direction:column;
+    }
+
+    .equipment-actions{
+      justify-content:flex-start;
+    }
+  }
+
+  @media (max-width:620px){
+    header{
+      padding:18px 18px 12px;
+    }
+
+    .stats-panel{
+      padding:18px;
+    }
+
+    .equipment-board{
+      padding:18px;
+      max-height:none;
+    }
+
+    .equipment-grid{
+      grid-template-columns:1fr;
+    }
+
+    .messages{
+      padding:20px 18px;
+    }
+
+    .composer{
+      padding:14px 18px 18px;
+    }
+
+    .msg{
+      max-width:92%;
+    }
   }
 </style>
 </head>
@@ -420,7 +707,7 @@
 
   <div class="ticker-wrap">
     <div class="ticker" id="ticker">
-      <!-- populated by JS with recent daily readings -->
+      <!-- populated by JS -->
     </div>
   </div>
 
@@ -430,6 +717,7 @@
       <h1>CO<sub>2</sub> Watch</h1>
       <span class="facility">INEOS Chocolate Bayou Plant — Daily Emissions Assistant</span>
     </div>
+
     <div class="status">
       <span class="dot"></span>
       BACKEND <span id="backendStatus">CHECKING…</span>
@@ -453,12 +741,17 @@
         <div class="stat-value" id="statMinMax" style="font-size:14px;">— / —</div>
       </div>
 
+      <div class="stat-card">
+        <div class="stat-label">Equipment Module</div>
+        <div class="stat-value" id="equipmentStatus" style="font-size:14px;">LOADING…</div>
+      </div>
+
       <div class="suggestions">
         <div class="stat-label">Carbon Intelligence Suite</div>
 
         <div class="module-card">
           <b>🏭 Industrial CO2 Emissions Assistant</b>
-          Analyze historical facility emissions, trends, drivers, and forecasts.
+          Analyze facility emissions, equipment-wise CO₂ generation, energy consumption, root cause, and forecasts.
         </div>
 
         <a
@@ -472,6 +765,26 @@
         </a>
 
         <div class="stat-label" style="margin-top:10px;">Try asking</div>
+
+        <button class="chip" onclick="ask('Show equipment-wise CO2 generation')">
+          Equipment-wise CO₂ generation
+        </button>
+
+        <button class="chip" onclick="ask('Show equipment-wise energy consumption')">
+          Equipment energy consumption
+        </button>
+
+        <button class="chip" onclick="ask('Show section-wise emissions')">
+          Section-wise emissions
+        </button>
+
+        <button class="chip" onclick="ask('What is the root cause of high emissions?')">
+          Root cause of high emissions
+        </button>
+
+        <button class="chip" onclick="downloadEquipmentReport()">
+          Download root-cause PDF report
+        </button>
 
         <button class="chip" onclick="ask('What is the average CO2 emission?')">
           What is the average CO2 emission?
@@ -489,10 +802,6 @@
           Which month peaks highest?
         </button>
 
-        <button class="chip" onclick="ask('What factors drive CO2 emissions?')">
-          What drives emissions?
-        </button>
-
         <button class="chip" onclick="ask('Predict CO2 for the next 30 days')">
           Forecast next 30 days
         </button>
@@ -500,13 +809,93 @@
     </div>
 
     <div class="chat-panel">
+
+      <section class="equipment-board" id="equipmentDashboard">
+        <div class="equipment-header">
+          <div class="equipment-title-block">
+            <span class="eyebrow">Equipment Intelligence Layer</span>
+            <h2>Equipment-wise CO₂ & Energy Dashboard</h2>
+            <p>
+              Static and dynamic analysis for Boiler, Furnace, Reformer, and Auxiliary Equipment.
+              Upload a new INEOS Excel file to make the chatbot, dashboard, and PDF report respond from the uploaded dataset.
+            </p>
+          </div>
+
+          <div class="equipment-actions">
+            <label class="upload-btn">
+              Upload INEOS Excel
+              <input
+                type="file"
+                id="equipmentFileInput"
+                accept=".xlsx,.xls"
+                hidden
+              >
+            </label>
+
+            <button class="refresh-btn" onclick="loadEquipmentDashboard()">
+              Refresh
+            </button>
+
+            <button class="report-btn" onclick="downloadEquipmentReport()">
+              Download PDF Report
+            </button>
+          </div>
+        </div>
+
+        <div class="upload-status" id="uploadStatus"></div>
+
+        <div class="equipment-grid" id="equipmentCards">
+          <div class="loading-card">Loading equipment-wise CO₂ and energy data...</div>
+        </div>
+
+        <div class="equipment-subgrid">
+          <div class="panel-card">
+            <h3>Section-wise Emissions</h3>
+
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Section</th>
+                    <th>Equipment</th>
+                    <th>CO₂ Emissions</th>
+                    <th>Energy</th>
+                  </tr>
+                </thead>
+                <tbody id="sectionTableBody">
+                  <tr>
+                    <td colspan="4">Loading section data...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <h3>Root Cause Analysis</h3>
+
+            <div id="rootCauseBox" class="root-cause-box">
+              Loading highest-emission equipment...
+            </div>
+
+            <div class="quick-prompts">
+              <button onclick="ask('Show equipment-wise CO2 generation')">Equipment CO₂</button>
+              <button onclick="ask('Show equipment-wise energy consumption')">Energy Usage</button>
+              <button onclick="ask('Show section-wise emissions')">Section Emissions</button>
+              <button onclick="ask('What is the root cause of high emissions?')">Root Cause</button>
+              <button onclick="ask('Generate equipment emissions report')">Report Prompt</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <div class="messages" id="messages"></div>
 
       <div class="composer">
         <input
           type="text"
           id="userInput"
-          placeholder="Ask about CO2 emissions, trends, or forecasts…"
+          placeholder="Ask about CO2 emissions, equipment emissions, energy, root cause, or forecasts…"
           onkeydown="if(event.key==='Enter') sendMessage();"
         >
         <button id="sendBtn" onclick="sendMessage()">Send</button>
@@ -571,6 +960,12 @@
 
       const data = await res.json();
       removeTyping();
+
+      if(data.error){
+        addMessage(data.error, 'bot', 'error');
+        return;
+      }
+
       addMessage(data.reply || 'Sorry, something went wrong.', 'bot', data.intent);
     }catch(err){
       removeTyping();
@@ -585,6 +980,16 @@
   function ask(text){
     document.getElementById('userInput').value = text;
     sendMessage();
+  }
+
+  function formatNumber(value){
+    if(value === null || value === undefined || Number.isNaN(Number(value))){
+      return "—";
+    }
+
+    return Number(value).toLocaleString("en-IN", {
+      maximumFractionDigits: 2
+    });
   }
 
   async function loadStats(){
@@ -612,6 +1017,7 @@
     const items = [
       `CARBON INTELLIGENCE SUITE: <b>ACTIVE</b>`,
       `INDUSTRIAL MODULE: <b>CO2 WATCH ONLINE</b>`,
+      `EQUIPMENT MODULE: <b>ROOT CAUSE BOT ACTIVE</b>`,
       `PERSONAL MODULE: <b>FOOTPRINT CALCULATOR CONNECTED</b>`,
       `FACILITY: INEOS CHOCOLATE BAYOU <b>ONLINE</b>`,
       `AVG DAILY CO2: <b>${stats.mean} tCO2e</b>`,
@@ -624,12 +1030,180 @@
     ticker.innerHTML = items.concat(items).map(i => `<span>${i}</span>`).join('');
   }
 
-  addMessage(
-    "Hello! I'm the CO2 Watch Industrial Emissions Assistant. I can answer questions about historical facility emissions, trends, drivers, and forecasts. You can also open the connected Personal Carbon Footprint Calculator from the left panel.",
-    'bot'
-  );
+  async function loadEquipmentDashboard(){
+    const equipmentCards = document.getElementById("equipmentCards");
+    const sectionTableBody = document.getElementById("sectionTableBody");
+    const rootCauseBox = document.getElementById("rootCauseBox");
+    const equipmentStatus = document.getElementById("equipmentStatus");
 
-  loadStats();
+    equipmentCards.innerHTML = `<div class="loading-card">Loading equipment-wise CO₂ and energy data...</div>`;
+    sectionTableBody.innerHTML = `<tr><td colspan="4">Loading section data...</td></tr>`;
+    rootCauseBox.textContent = "Loading highest-emission equipment...";
+    equipmentStatus.textContent = "LOADING…";
+
+    try{
+      const summaryRes = await fetch(`${API_BASE}/equipment/summary`);
+      const summary = await summaryRes.json();
+
+      if(summary.error){
+        equipmentCards.innerHTML = `<div class="loading-card">Error: ${summary.error}</div>`;
+        rootCauseBox.textContent = summary.error;
+        equipmentStatus.textContent = "ERROR";
+        equipmentStatus.style.color = "var(--danger)";
+        return;
+      }
+
+      renderEquipmentCards(summary);
+      renderRootCause(summary);
+
+      equipmentStatus.textContent = "ONLINE";
+      equipmentStatus.style.color = "var(--accent)";
+
+      const sectionsRes = await fetch(`${API_BASE}/equipment/sections`);
+      const sections = await sectionsRes.json();
+
+      if(sections.error){
+        sectionTableBody.innerHTML = `<tr><td colspan="4">Error: ${sections.error}</td></tr>`;
+      }else{
+        renderSectionTable(sections);
+      }
+
+      const statusText = summary.active_file
+        ? `Active equipment dataset: ${summary.active_file} · ${summary.records || "—"} records`
+        : "Equipment dataset loaded.";
+
+      document.getElementById("uploadStatus").textContent = statusText;
+
+    }catch(error){
+      equipmentCards.innerHTML = `<div class="loading-card">Could not load equipment data.</div>`;
+      sectionTableBody.innerHTML = `<tr><td colspan="4">Could not load section data.</td></tr>`;
+      rootCauseBox.textContent = "Could not load root-cause data.";
+      equipmentStatus.textContent = "OFFLINE";
+      equipmentStatus.style.color = "var(--alert)";
+    }
+  }
+
+  function renderEquipmentCards(summary){
+    const container = document.getElementById("equipmentCards");
+
+    if(!summary.equipment || !summary.equipment.length){
+      container.innerHTML = `<div class="loading-card">No equipment data available.</div>`;
+      return;
+    }
+
+    const rootEquipment = summary.root_cause ? summary.root_cause.equipment : "";
+
+    container.innerHTML = summary.equipment.map(item => {
+      const isRoot = item.equipment === rootEquipment;
+
+      return `
+        <div class="equipment-card ${isRoot ? "root-highlight" : ""}">
+          <h3>${item.equipment}</h3>
+          <div class="value">${formatNumber(item.total_emissions_tCO2e)} tCO₂e</div>
+          <div class="sub-value">Energy: ${formatNumber(item.total_energy_kWh)} kWh</div>
+          <div class="sub-value">Latest CO₂: ${formatNumber(item.latest_emissions_tCO2e)} tCO₂e</div>
+          <div class="sub-value">Latest Energy: ${formatNumber(item.latest_energy_kWh)} kWh</div>
+          <span class="share">${formatNumber(item.emission_share_pct)}% share</span>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function renderRootCause(summary){
+    const box = document.getElementById("rootCauseBox");
+
+    if(!summary.root_cause){
+      box.innerHTML = "Root-cause data is not available.";
+      return;
+    }
+
+    box.innerHTML = `
+      <strong>${summary.root_cause.equipment}</strong><br>
+      ${summary.root_cause.reason}
+    `;
+  }
+
+  function renderSectionTable(sections){
+    const tbody = document.getElementById("sectionTableBody");
+
+    if(!sections.sections || !sections.sections.length){
+      tbody.innerHTML = `<tr><td colspan="4">No section-wise data available.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = sections.sections.map(section => `
+      <tr>
+        <td>${section.section}</td>
+        <td>${section.equipment}</td>
+        <td>${formatNumber(section.total_emissions_tCO2e)} tCO₂e</td>
+        <td>${formatNumber(section.total_energy_kWh)} kWh</td>
+      </tr>
+    `).join("");
+  }
+
+  async function uploadEquipmentFile(file){
+    const status = document.getElementById("uploadStatus");
+
+    if(!file){
+      return;
+    }
+
+    status.textContent = "Uploading and processing file in the background...";
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try{
+      const res = await fetch(`${API_BASE}/equipment/upload`, {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await res.json();
+
+      if(data.error){
+        status.textContent = `Upload failed: ${data.error}`;
+        return;
+      }
+
+      status.textContent = `Uploaded ${data.file_name}. Records processed: ${data.records}. Chatbot and report now use this file.`;
+
+      await loadEquipmentDashboard();
+
+      addMessage(
+        `New equipment dataset uploaded: ${data.file_name}. I will now answer equipment CO₂, energy, section-wise emissions, root-cause, and report queries using this uploaded file.`,
+        'bot',
+        'dataset_uploaded'
+      );
+
+    }catch(error){
+      status.textContent = "Upload failed. Please try again.";
+    }
+  }
+
+  function downloadEquipmentReport(){
+    window.open(`${API_BASE}/equipment/report`, "_blank");
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const fileInput = document.getElementById("equipmentFileInput");
+
+    if(fileInput){
+      fileInput.addEventListener("change", function(){
+        if(this.files && this.files[0]){
+          uploadEquipmentFile(this.files[0]);
+        }
+      });
+    }
+
+    addMessage(
+      "Hello! I'm the CO2 Watch Industrial Emissions Assistant. I can answer questions about historical facility emissions, trends, drivers, and forecasts. I can also analyse equipment-wise CO2 generation, energy consumption, section-wise emissions, root cause, and generate a PDF report.",
+      'bot'
+    );
+
+    loadStats();
+    loadEquipmentDashboard();
+  });
 </script>
 
 </body>
